@@ -8,14 +8,21 @@ use App\Models\restaurant;
 
 class Reservation extends Model
 {
-
+    protected $fillable = [
+        'user_id',
+        'restaurant_id',
+        'date',
+        'heure',
+        'nombre_personnes',
+        'status',
+    ];
     protected $table = 'reservation';
-    public function User()
+    public function user()
     {
         return $this->belongsTo(User::class,'user_id');
     }
 
-    public function Restaurant()
+    public function restaurant()
     {
         return $this->belongsTo(restaurant::class,'restaurant_id');
     }
