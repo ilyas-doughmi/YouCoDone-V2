@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\menu;
+use App\Models\Horaire;
 
 class restaurant extends Model
 {
@@ -50,5 +51,10 @@ class restaurant extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class,'restaurant_id');
+    }
+
+    public function horaires()
+    {
+        return $this->hasMany(Horaire::class,'restaurantId');
     }
 }
