@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReservationRequest;
 use App\Models\Horaire;
+use App\Models\Reservation;
 use App\Models\restaurant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class ReservationController extends Controller
 {
@@ -34,6 +38,28 @@ class ReservationController extends Controller
         {
             return back()->withErrors(['heure' => "reservation time need to be from {$horaire->heure_ouverture} à {$horaire->heure_fermeture}"]);
         } 
+
+        $reservationsExistantes = Reservation::where('restaurant_id', $restaurant->id)
+            ->where('date', $data['date'])
+            ->where('heure', $data['heure'])
+            ->sum('nombre_personnes');
+
+        if (($reservationsExistantes + $data['nombre_personnes']) > $restaurant->capacite) {
+             return back()->withErrors(['nombre_personnes' => "no place"])->withInput();
+        }
+
+
+        Reservation::create([
+            'user_id' => Auth::id(),
+            'restaurant_id' => $data['restaurant_id'],
+            'date' => $data['date'],
+            'heure' => $data['heure'],
+            'nombre_personnes' => $data['nombre_personnes'],
+            'status' => 'en_attente'
+        ]);
+
+        return redirect()->route('client.restaurants.show', $restaurant->id)
+            ->with('success', 'reservation done');
 
     }
 }
