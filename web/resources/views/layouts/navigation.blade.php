@@ -5,16 +5,36 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+                    @role('admin')
+                        <a href="{{ route('admin.dashboard') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @elserole('restaurateur')
+                        <a href="{{ route('restaurateur.dashboard') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @else
+                        <a href="{{ url('/') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @endrole
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @role('admin')
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @elserole('restaurateur')
+                        <x-nav-link :href="route('restaurateur.dashboard')" :active="request()->routeIs('restaurateur.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @elserole('client')
+                        <x-nav-link :href="route('client.restaurants.index')" :active="request()->routeIs('client.restaurants.index')">
+                            {{ __('Explorer') }}
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -67,9 +87,19 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @role('admin')
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @elserole('restaurateur')
+                <x-responsive-nav-link :href="route('restaurateur.dashboard')" :active="request()->routeIs('restaurateur.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @elserole('client')
+                <x-responsive-nav-link :href="route('client.restaurants.index')" :active="request()->routeIs('client.restaurants.index')">
+                    {{ __('Explorer') }}
+                </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->
