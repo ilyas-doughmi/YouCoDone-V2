@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RestaurantController;
 use App\AdminController;
+use App\Http\Controllers\ReservationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/catalogue', [App\Http\Controllers\ClientRestaurantController::class, 'index'])->name('client.restaurants.index');
         Route::get('/catalogue/{id}', [App\Http\Controllers\ClientRestaurantController::class, 'show'])->name('client.restaurants.show');
         Route::post('/catalogue/{id}/favorite', [App\Http\Controllers\ClientRestaurantController::class, 'toggleFavorite'])->name('client.restaurants.favorite');
+        Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
     });
 });
 
