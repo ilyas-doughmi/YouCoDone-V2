@@ -61,7 +61,7 @@
             <div class="bg-white rounded-2xl shadow-card p-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">Informations personnelles</h3>
-                    <a href="{{ url('/restaurateur/profile/edit') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-500">Modifier</a>
+                    <a href="{{ route('profile.edit') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-500">Modifier</a>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,7 +87,7 @@
             <div class="bg-white rounded-2xl shadow-card p-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">Sécurité du compte</h3>
-                    <a href="{{ url('/restaurateur/profile/edit') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-500">Gérer</a>
+                    <a href="{{ route('profile.edit') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-500">Gérer</a>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
