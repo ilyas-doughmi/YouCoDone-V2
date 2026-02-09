@@ -47,7 +47,7 @@ class restaurant extends Model
         return $this->belongsToMany(User::class, 'favori', 'restaurantId', 'userId')->withTimestamps();
     }
 
-    public function Reservation()
+    public function reservations()
     {
         return $this->hasMany(Reservation::class,'restaurant_id');
     }
