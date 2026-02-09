@@ -18,15 +18,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-2">
-                    <div class="bg-indigo-600 text-white p-1.5 rounded-lg">
-                        <i class="ph-bold ph-gear text-xl"></i>
-                    </div>
-                    <span class="font-bold text-xl tracking-tight text-gray-900">AdminPanel</span>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 hover:opacity-80 transition">
+                        <div class="bg-indigo-600 text-white p-1.5 rounded-lg">
+                            <i class="ph-bold ph-gear text-xl"></i>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight text-gray-900">AdminPanel</span>
+                    </a>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-sm text-right hidden sm:block">
-                        <p class="font-medium text-gray-900">Administrateur</p>
-                        <p class="text-xs text-gray-500">Super Admin</p>
+                        <p class="font-medium text-gray-900">{{ Auth::user()->name ?? 'Administrateur' }}</p>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs text-red-500 hover:underline">Se déconnecter</button>
+                        </form>
                     </div>
                     <div class="h-10 w-10 bg-gray-200 rounded-full border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
                         <i class="ph-fill ph-user text-gray-400 text-xl"></i>
