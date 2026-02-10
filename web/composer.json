@@ -9,6 +9,7 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "matte97p/laravel-postgresql-inherit": "~2.7",
+        "nesbot/carbon": "^3.11",
         "spatie/laravel-permission": "^6.24"
     },
     "require-dev": {
