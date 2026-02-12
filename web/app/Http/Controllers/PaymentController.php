@@ -32,4 +32,14 @@ class PaymentController extends Controller
 
         return back()->with('error', 'Error in payement');
    }
+
+   public function success(Request $request,PaymentInterface $paymentService)
+   {
+     // soon :)
+   }
+
+   public function cancel()
+   {
+     return redirect()->route('client.restaurants.index')->with('error','paymenet cancel');
+   }
 }
