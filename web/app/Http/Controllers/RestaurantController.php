@@ -33,6 +33,11 @@ class RestaurantController extends Controller
             'description' => 'required',
             'photos' => 'nullable|array|max:3',
             'photos.*' => 'image|mimes:jpeg,jpg,png|max:4096',
+            'horaires' => 'array',
+            'horaires.*.jour' => 'required|string',
+            'horaires.*.heure_ouverture' => 'nullable|date_format:H:i',
+            'horaires.*.heure_fermeture' => 'nullable|date_format:H:i|after:horaires.*.heure_ouverture',
+            'horaires.*.ouvert' => 'nullable',
         ]);
         $firstImagePath = null;
 
@@ -65,6 +70,20 @@ class RestaurantController extends Controller
 
         if ($firstImagePath) {
             $restaurant->update(['image' => $firstImagePath]);
+        }
+
+        if ($request->has('horaires')) {
+            foreach ($request->horaires as $data) {
+                $status = isset($data['ouvert']) ? 'ouvert' : 'fermé';
+                
+                \App\Models\Horaire::create([
+                    'restaurantId' => $restaurant->id,
+                    'jour' => $data['jour'],
+                    'heure_ouverture' => $data['heure_ouverture'] ?? '09:00',
+                    'heure_fermeture' => $data['heure_fermeture'] ?? '18:00',
+                    'status' => $status
+                ]);
+            }
         }
         return redirect()->route('restaurants.index');
     }
@@ -153,6 +172,11 @@ class RestaurantController extends Controller
             'description' => 'required',
             'photos' => 'nullable|array|max:3',
             'photos.*' => 'image|mimes:jpeg,jpg,png|max:4096',
+            'horaires' => 'array',
+            'horaires.*.jour' => 'required|string',
+            'horaires.*.heure_ouverture' => 'nullable|date_format:H:i',
+            'horaires.*.heure_fermeture' => 'nullable|date_format:H:i|after:horaires.*.heure_ouverture',
+            'horaires.*.ouvert' => 'nullable',
         ]);
 
         $restaurant = restaurant::where('id', $id)
@@ -189,7 +213,26 @@ class RestaurantController extends Controller
             $restaurant->update(['image' => $firstImagePath]);
         }
 
-        return redirect()->route('restaurants.index')->with('status', 'Restaurant mis à jour.');
+        if ($request->has('horaires')) {
+            foreach ($request->horaires as $data) {
+                $status = isset($data['ouvert']) ? 'ouvert' : 'fermé';
+                
+         
+                \App\Models\Horaire::updateOrCreate(
+                    [
+                        'restaurantId' => $restaurant->id,
+                        'jour' => $data['jour']
+                    ],
+                    [
+                        'heure_ouverture' => $data['heure_ouverture'] ?? '09:00',
+                        'heure_fermeture' => $data['heure_fermeture'] ?? '18:00',
+                        'status' => $status
+                    ]
+                );
+            }
+        }
+
+        return redirect()->route('restaurants.index')->with('status', 'Restaurant et horaires mis à jour !');
     }
 
     public function destroy(string $id)
