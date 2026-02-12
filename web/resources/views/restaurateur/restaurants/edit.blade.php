@@ -43,11 +43,64 @@
                 <textarea name="description" id="description" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm">{{ old('description', $restaurant->description) }}</textarea>
             </div>
 
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label for="hours" class="block text-sm font-medium text-gray-700">Horaires</label>
-                    <input type="text" name="hours" id="hours" placeholder="Ex: Lun-Dim 12:00-23:00" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm">
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mt-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <i class="ph-duotone ph-clock text-brand-500"></i>
+                    Horaires d'ouverture
+                </h3>
+
+    <div class="space-y-4">
+        {{-- On définit les jours ici pour la boucle --}}
+        @php
+            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+        @endphp
+
+        @foreach($jours as $jour)
+            {{-- On récupère l'horaire existant pour ce jour s'il existe --}}
+            @php
+                $horaire = $restaurant->horaires->where('jour', $jour)->first();
+            @endphp
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 rounded-lg bg-gray-50 border border-gray-100 hover:border-brand-500/30 transition">
+                
+                {{-- 1. Le Nom du Jour --}}
+                <div class="font-bold text-gray-700 flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-brand-500 shadow-sm">
+                        {{ substr($jour, 0, 1) }}
+                    </div>
+                    {{ $jour }}
+                    <input type="hidden" name="horaires[{{ $loop->index }}][jour]" value="{{ $jour }}">
                 </div>
+
+                {{-- 2. Heure d'ouverture --}}
+                <div>
+                    <label class="text-xs text-gray-500 mb-1 block">Ouverture</label>
+                    <input type="time" name="horaires[{{ $loop->index }}][heure_ouverture]" 
+                           value="{{ old("horaires.{$loop->index}.heure_ouverture", $horaire?->heure_ouverture) }}"
+                           class="w-full rounded-lg border-gray-200 text-sm focus:border-brand-500 focus:ring-brand-500/20">
+                </div>
+
+                {{-- 3. Heure de fermeture --}}
+                <div>
+                    <label class="text-xs text-gray-500 mb-1 block">Fermeture</label>
+                    <input type="time" name="horaires[{{ $loop->index }}][heure_fermeture]" 
+                           value="{{ old("horaires.{$loop->index}.heure_fermeture", $horaire?->heure_fermeture) }}"
+                           class="w-full rounded-lg border-gray-200 text-sm focus:border-brand-500 focus:ring-brand-500/20">
+                </div>
+
+                {{-- 4. Switch Ouvert/Fermé --}}
+                <div class="flex items-center justify-end">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="horaires[{{ $loop->index }}][ouvert]" value="1" class="sr-only peer"
+                            {{ (old("horaires.{$loop->index}.ouvert") || ($horaire && $horaire->status === 'ouvert')) ? 'checked' : '' }}>
+                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-700">Ouvert</span>
+                    </label>
+                </div>
+
+            </div>
+        @endforeach
+    </div>
             </div>
 
             <div class="mt-8">
