@@ -72,4 +72,14 @@ class ReservationController extends Controller
             ->with('success', 'reservation done');
 
     }
+
+    public function mesReservations()
+    {
+        $reservations = Reservation::where('user_id', auth()->id())
+        ->with('restaurant')
+        ->orderBy('created_at','desc')
+        ->get();
+
+        return view('client.reservations.index', compact('reservations'));
+    }   
 }
