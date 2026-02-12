@@ -16,7 +16,12 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        return view('restaurateur.reservations.index');
+        $userId = Auth::id();
+        $reservations = Reservation::whereHas('restaurant', function($query) use ($userId) {
+            $query->where('userId', $userId);
+        })->with(['restaurant', 'user'])->orderBy('date', 'desc')->get();
+
+        return view('restaurateur.reservations.index', compact('reservations'));
     }
 
     public function store(StoreReservationRequest $request)
