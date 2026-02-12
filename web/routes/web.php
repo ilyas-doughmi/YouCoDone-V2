@@ -24,6 +24,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/catalogue/{id}', [App\Http\Controllers\ClientRestaurantController::class, 'show'])->name('client.restaurants.show');
         Route::post('/catalogue/{id}/favorite', [App\Http\Controllers\ClientRestaurantController::class, 'toggleFavorite'])->name('client.restaurants.favorite');
         Route::post('/reservation', [ReservationController::class, 'store'])->name('reservations.store');
+
+        // Routes de Paiement
+        Route::post('/payment/pay', [App\Http\Controllers\PaymentController::class, 'pay'])->name('payment.pay');
+        Route::get('/payment/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('payment.cancel');
+        Route::get('/mes-reservations', [ReservationController::class, 'mesReservations'])->name('client.reservations.index');
     });
 });
 
