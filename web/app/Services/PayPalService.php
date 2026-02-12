@@ -62,7 +62,7 @@ class PayPalService implements PaymentInterface
         $response = $this->provider->capturePaymentOrder($token);
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-                return true; 
+            return $response['purchase_units'][0]['payments']['captures'][0]['id'] ?? true;
         }
         
         Log::error('problem getting paypal:',$response);
@@ -73,4 +73,27 @@ class PayPalService implements PaymentInterface
             return false;
         }
      }
+
+   public function refund(string $transactionId)
+   {
+        try {
+           $response =  $this->provider->refundCapturedPayment(
+                $transactionId,
+                $transactionId . '-' . time(),
+                number_format(0,2),
+                'refund'
+            );
+
+            if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+                return true;
+            }
+
+            Log::error('problem in refund', $response);
+            return false;
+
+        }catch(\Exception $e){
+            Log::error('Exception Refund PayPal: ' . $e->getMessage());
+            return false;
+        }
+   }
 }
