@@ -60,9 +60,9 @@
                 </a>
                 @role('client')
                 <div class="hidden md:flex gap-10 text-sm font-semibold text-gray-500">
-                    <a href="{{ route('client.restaurants.index') }}" class="text-gray-900 hover:text-brand-500 transition">Explorer</a>
-                    <a href="{{ route('client.restaurants.index') }}" class="hover:text-brand-500 transition">Villes</a>
-                    <a href="{{ route('client.restaurants.index') }}" class="hover:text-brand-500 transition">Restaurateurs</a>
+                    <a href="{{ route('client.restaurants.index') }}" class="text-gray-900 hover:text-brand-500 transition">Restaurants</a>
+                    <a href="{{ route('client.reservations.index') }}" class="hover:text-brand-500 transition">Mes Réservations</a>
+                    <a href="{{ route('client.restaurants.index') }}" class="hover:text-brand-500 transition">Favoris</a>
                 </div>
                 @endrole
 
