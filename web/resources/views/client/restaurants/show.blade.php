@@ -128,12 +128,40 @@
                         </button>
                     </form>
 
-                    <button class="w-full bg-brand-500 hover:bg-brand-600 text-white py-4 rounded-xl font-bold shadow-xl shadow-brand-500/30 transition duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
-                        <span>Réserver une table</span>
-                        <i class="ph-bold ph-calendar-check text-xl group-hover:scale-110 transition"></i>
-                    </button>
-                    
-                    <p class="text-center text-xs text-gray-400 mt-4">Aucun frais de réservation</p>
+                    <form action="{{ route('reservations.store') }}" method="POST" class="space-y-6">
+                        @csrf
+                        <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
+
+                        <div>
+                            <label for="date" class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                            <input id="date" type="date" name="date" value="{{ old('date') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition bg-white" />
+                            @error('date')
+                                <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="heure" class="block text-sm font-semibold text-gray-700 mb-2">Heure</label>
+                            <input id="heure" type="time" name="heure" value="{{ old('heure') }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition bg-white" />
+                            @error('heure')
+                                <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="nombre_personnes" class="block text-sm font-semibold text-gray-700 mb-2">Nombre de personnes</label>
+                            <input id="nombre_personnes" type="number" min="1" name="nombre_personnes" value="{{ old('nombre_personnes', 1) }}" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition bg-white" />
+                            @error('nombre_personnes')
+                                <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white py-4 rounded-xl font-bold shadow-xl shadow-brand-500/30 transition duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
+                            <span>Réserver une table</span>
+                            <i class="ph-bold ph-calendar-check text-xl group-hover:scale-110 transition"></i>
+                        </button>
+                        <p class="text-center text-xs text-gray-400">Aucun frais de réservation</p>
+                    </form>
                 </div>
             </div>
         </div>
