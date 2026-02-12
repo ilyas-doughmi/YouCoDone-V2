@@ -52,4 +52,25 @@ class PayPalService implements PaymentInterface
             return null;
         }
     }
+
+    public function execute($request)
+     {
+        try{
+
+        $this->provider->getAccessToken();
+        $token = $request->input('token');
+        $response = $this->provider->capturePaymentOrder($token);
+
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+                return true; 
+        }
+        
+        Log::error('problem getting paypal:',$response);
+        return false;
+        
+        }catch(\Exception $e){
+            Log::error('problem in exceptions' . $e->getMessage());
+            return false;
+        }
+     }
 }
