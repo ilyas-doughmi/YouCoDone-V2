@@ -7,4 +7,6 @@ interface PaymentInterface
     public function pay(float $amount, array $data);
 
     public function execute($request);
+
+    public function refund(string $transactionId);
 }
