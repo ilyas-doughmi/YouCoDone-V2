@@ -15,40 +15,40 @@ class PayPalService implements PaymentInterface
         $this->provider->setApiCredentials(Config('paypal'));
     }
 
-    public function pay(float $amount,array $data)
+    public function pay(float $amount, array $data)
     {
         try{
             $this->provider->getAccessToken();
             $response = $this->provider->createOrder([
                 "intent" => "CAPTURE",
                 "application_context" => [
-                    "return_url" => route('payment.success'),
+                    "return_url" => route('payment.success', ['reservation_id' => $data['reservation_id']]),
                     "cancel_url" => route('payment.cancel'),
                 ],
-                "purchase_units" =>  [
-                    "amount" => [
-                        "currency_code" => config('paypal.currency','EUR'),
-                        "value" => number_format($amount,2,'.','')
-                    ],
-
-                    "custom_id" => $data['reservationId'] ?? null
+                "purchase_units" => [
+                    [
+                        "amount" => [
+                            "currency_code" => config('paypal.currency','EUR'),
+                            "value" => number_format($amount, 2, '.', '')
+                        ],
+                        "custom_id" => $data['reservation_id'] ?? null
+                    ]
                 ]
             ]);
 
             if(isset($response['id']) && $response['status'] == 'CREATED') {
-                foreach($response['link'] as $link)
-                {
+                foreach($response['links'] as $link) {
                     if($link['rel'] === 'approve'){
-                        return $link['rel'];    
+                        return $link['href'];    
                     }
                 }
             }
 
-            Log::error('error in creating payment',$response);
+            Log::error('error in creating payment', $response);
             return null;
             
         }catch(\Exception $e){
-            Log::error('error in payment ',$e->getMessage());
+            Log::error('error in payment: ' . $e->getMessage());
             return null;
         }
     }
