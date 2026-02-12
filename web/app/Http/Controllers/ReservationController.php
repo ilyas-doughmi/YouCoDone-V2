@@ -34,9 +34,19 @@ class ReservationController extends Controller
             return back()->withErrors(['date' => "restaurant is closed $jourActual "])->withInput();
         }
 
-        if($data['heure'] < $horaire->heure_ouverture || $data['heure'] > $horaire->heure_ouverture)
-        {
-            return back()->withErrors(['heure' => "reservation time need to be from {$horaire->heure_ouverture} à {$horaire->heure_fermeture}"]);
+        $reservationTime = Carbon::parse($data['heure']);
+        $openingTime = Carbon::parse($horaire->heure_ouverture);
+        $closingTime = Carbon::parse($horaire->heure_fermeture);
+
+        if ($closingTime->lt($openingTime)) {
+            $closingTime->addDay();
+            if ($reservationTime->lt($openingTime)) {
+                $reservationTime->addDay();
+            }
+        }
+
+        if ($reservationTime->lt($openingTime) || $reservationTime->gt($closingTime)) {
+            return back()->withErrors(['heure' => "Reservation time need to be from {$openingTime->format('H:i')} to {$closingTime->format('H:i')}"]);
         } 
 
         $reservationsExistantes = Reservation::where('restaurant_id', $restaurant->id)
