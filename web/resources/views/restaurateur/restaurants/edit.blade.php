@@ -50,26 +50,31 @@
                 </h3>
 
     <div class="space-y-4">
-        {{-- On définit les jours ici pour la boucle --}}
         @php
-            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            $jours = [
+                'Monday' => 'Lundi', 
+                'Tuesday' => 'Mardi', 
+                'Wednesday' => 'Mercredi', 
+                'Thursday' => 'Jeudi', 
+                'Friday' => 'Vendredi', 
+                'Saturday' => 'Samedi', 
+                'Sunday' => 'Dimanche'
+            ];
         @endphp
 
-        @foreach($jours as $jour)
-            {{-- On récupère l'horaire existant pour ce jour s'il existe --}}
+        @foreach($jours as $key => $value)
             @php
-                $horaire = $restaurant->horaires->where('jour', $jour)->first();
+                $horaire = $restaurant->horaires->where('jour', $key)->first();
             @endphp
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 rounded-lg bg-gray-50 border border-gray-100 hover:border-brand-500/30 transition">
                 
-                {{-- 1. Le Nom du Jour --}}
                 <div class="font-bold text-gray-700 flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-brand-500 shadow-sm">
-                        {{ substr($jour, 0, 1) }}
+                        {{ substr($value, 0, 1) }}
                     </div>
-                    {{ $jour }}
-                    <input type="hidden" name="horaires[{{ $loop->index }}][jour]" value="{{ $jour }}">
+                    {{ $value }}
+                    <input type="hidden" name="horaires[{{ $loop->index }}][jour]" value="{{ $key }}">
                 </div>
 
                 {{-- 2. Heure d'ouverture --}}
