@@ -55,12 +55,26 @@ class StripeService implements PaymentInterface
             $session = Session::retrieve($sessionId);
 
             if ($session->payment_status === 'paid') {
-                return true;
+                return $session->payment_intent;
             }
 
             return false;
         } catch (\Exception $e) {
             Log::error('Stripe Execute Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function refund(string $transactionId)
+    {
+        try {
+            $refund = \Stripe\Refund::create([
+                'payment_intent' => $transactionId,
+            ]);
+
+            return $refund->status === 'succeeded' || $refund->status === 'pending';
+        } catch (\Exception $e) {
+            Log::error('Stripe Refund Error: ' . $e->getMessage());
             return false;
         }
     }
