@@ -48,10 +48,15 @@ class PaymentController extends Controller
             $paymentService = new \App\Services\PayPalService();
         }
 
-        if ($paymentService->execute($request)) {
+        $transactionId = $paymentService->execute($request);
+
+        if ($transactionId) {
             $reservation = Reservation::find($request->reservation_id);
             if ($reservation) {
-                $reservation->update(['status' => 'confirme']);
+                $reservation->update([
+                    'status' => 'confirme',
+                    'transaction_id' => is_string($transactionId) ? $transactionId : null
+                ]);
                 return redirect()->route('client.reservations.index')->with('success', 'Paiement réussi ! Votre réservation est confirmée.');
             }
         }
@@ -63,4 +68,31 @@ class PaymentController extends Controller
    {
      return redirect()->route('client.reservations.index')->with('error', 'Paiement annulé.');
    }
+
+   public function refund($id)
+   {
+        $reservation = Reservation::findOrFail($id);
+
+        if (!$reservation->transaction_id) {
+             return back()->with('error', 'Aucune transaction trouvée pour cette réservation.');
+        }
+
+        $transactionId = $reservation->transaction_id;
+        $isStripe = str_starts_with($transactionId, 'pi_') || str_starts_with($transactionId, 'ch_');
+        
+        if ($isStripe) {
+            $paymentService = new \App\Services\StripeService();
+        } else {
+            $paymentService = new \App\Services\PayPalService();
+        }
+
+        if ($paymentService->refund($transactionId)) {
+            $reservation->update(['status' => 'refuse']);
+            return back()->with('success', 'Réservation refusée et remboursement effectué avec succès.');
+        }
+
+        return back()->with('error', 'Échec du remboursement.');
+   }
+
+
 }
