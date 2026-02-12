@@ -15,6 +15,7 @@ class Reservation extends Model
         'heure',
         'nombre_personnes',
         'status',
+        'transaction_id',
     ];
     protected $table = 'reservation';
     public function user()
