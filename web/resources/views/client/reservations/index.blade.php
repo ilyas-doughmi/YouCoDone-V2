@@ -73,15 +73,19 @@
                                 @endif
                             </td>
                             <td class="p-6 text-right">
-                                {{-- 🟢 C'EST ICI LA CONNEXION --}}
                                 @if($reservation->status === 'en_attente')
-                                    <form action="{{ route('payment.pay') }}" method="POST">
+                                    <form action="{{ route('payment.pay') }}" method="POST" class="flex flex-col gap-2">
                                         @csrf
                                         <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
                                         
-                                        <button type="submit" class="inline-flex items-center gap-2 bg-[#0070BA] hover:bg-[#003087] text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5">
+                                        <button type="submit" name="payment_method" value="paypal" class="inline-flex items-center justify-center gap-2 bg-[#0070BA] hover:bg-[#003087] text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5 w-full">
                                             <i class="ph-fill ph-paypal-logo text-lg"></i>
-                                            Payer l'acompte
+                                            PayPal
+                                        </button>
+
+                                        <button type="submit" name="payment_method" value="stripe" class="inline-flex items-center justify-center gap-2 bg-[#635BFF] hover:bg-[#4B45C6] text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20 transform hover:-translate-y-0.5 w-full">
+                                            <i class="ph-bold ph-credit-card text-lg"></i>
+                                            Stripe
                                         </button>
                                     </form>
                                 @else
