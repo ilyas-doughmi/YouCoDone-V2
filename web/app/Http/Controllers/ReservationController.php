@@ -9,6 +9,7 @@ use App\Models\restaurant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ReservationReceived;
 
 
 
@@ -64,7 +65,7 @@ class ReservationController extends Controller
         }
 
 
-        Reservation::create([
+        $reservation = Reservation::create([
             'user_id' => Auth::id(),
             'restaurant_id' => $data['restaurant_id'],
             'date' => $data['date'],
@@ -72,6 +73,8 @@ class ReservationController extends Controller
             'nombre_personnes' => $data['nombre_personnes'],
             'status' => 'en_attente'
         ]);
+
+        $restaurant->user->notify(new ReservationReceived($reservation));
 
         return redirect()->route('client.restaurants.show', $restaurant->id)
             ->with('success', 'reservation done');
