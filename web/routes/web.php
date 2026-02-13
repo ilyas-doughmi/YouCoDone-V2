@@ -44,7 +44,8 @@ Route::middleware(['auth','role:restaurateur'])->group(function(){
             'active' => $active,
             'inactive' => $inactive,
         ];
-        return view('restaurateur.dashboard', compact('stats'));
+        $notifications = auth()->user()->unreadNotifications;
+        return view('restaurateur.dashboard', compact('stats', 'notifications'));
     })->middleware(['auth', 'verified'])->name('restaurateur.dashboard');
 
     Route::resource('restaurants', App\Http\Controllers\RestaurantController::class);
