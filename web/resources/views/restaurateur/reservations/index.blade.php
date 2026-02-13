@@ -27,71 +27,53 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                {{-- Example Row --}}
+                @foreach($reservations as $reservation)
                 <tr class="hover:bg-gray-50/50 transition">
                     <td class="p-6">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">JD</div>
+                            <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold">
+                                {{ substr($reservation->user->name, 0, 1) }}
+                            </div>
                             <div>
-                                <p class="font-bold text-gray-900">Jean Dupont</p>
-                                <p class="text-xs text-gray-500">jean@example.com</p>
+                                <p class="font-bold text-gray-900">{{ $reservation->user->name }}</p>
+                                <p class="text-xs text-gray-500">{{ $reservation->user->email }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="p-6 text-gray-500">Le Petit Bistro</td>
-                    <td class="p-6 text-gray-900 font-medium">
-                        <div>12 Oct, 2023</div>
-                        <div class="text-sm text-gray-500">19:30</div>
+                    <td class="p-6 text-gray-500 font-medium">{{ $reservation->restaurant->nom }}</td>
+                    <td class="p-6 text-gray-900">
+                        <div class="font-semibold">{{ \Carbon\Carbon::parse($reservation->date)->format('d M, Y') }}</div>
+                        <div class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($reservation->heure)->format('H:i') }}</div>
                     </td>
-                    <td class="p-6 text-gray-500">4 pers.</td>
+                    <td class="p-6 text-gray-500">{{ $reservation->nombre_personnes }} pers.</td>
                     <td class="p-6">
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">
-                            Confirmée
-                        </span>
+                        @if($reservation->status === 'confirme')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+                                <i class="ph-bold ph-check-circle"></i> Confirmée
+                            </span>
+                        @elseif($reservation->status === 'en_attente')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                                En attente
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                                Refusée
+                            </span>
+                        @endif
                     </td>
                     <td class="p-6 text-right space-x-2">
-                        <button class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition" title="Détails">
-                            <i class="ph-bold ph-eye"></i>
-                        </button>
-                        <button class="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition" title="Annuler">
-                            <i class="ph-bold ph-x"></i>
-                        </button>
+                        @if($reservation->status === 'confirme' && $reservation->transaction_id)
+                            <form action="{{ route('payment.refund', $reservation->id) }}" method="POST" class="inline" onsubmit="return confirm('Voulez-vous vraiment refuser cette réservation et rembourser le client ?');">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition" title="Refuser et Rembourser">
+                                    <i class="ph-bold ph-arrow-u-up-left"></i> Refuser & Rembourser
+                                </button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
-                {{-- End Example Row --}}
-                
-                {{-- Example Grid Row --}}
-                <tr class="hover:bg-gray-50/50 transition">
-                    <td class="p-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">MA</div>
-                            <div>
-                                <p class="font-bold text-gray-900">Marie Albert</p>
-                                <p class="text-xs text-gray-500">marie@example.com</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="p-6 text-gray-500">Le Petit Bistro</td>
-                    <td class="p-6 text-gray-900 font-medium">
-                        <div>12 Oct, 2023</div>
-                        <div class="text-sm text-gray-500">20:00</div>
-                    </td>
-                    <td class="p-6 text-gray-500">2 pers.</td>
-                    <td class="p-6">
-                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold border border-yellow-200">
-                            En attente
-                        </span>
-                    </td>
-                    <td class="p-6 text-right space-x-2">
-                         <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition" title="Accepter">
-                            <i class="ph-bold ph-check"></i>
-                        </button>
-                        <button class="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition" title="Refuser">
-                            <i class="ph-bold ph-x"></i>
-                        </button>
-                    </td>
-                </tr>
-                 {{-- End Example Grid Row --}}
+                @endforeach
 
             </tbody>
         </table>
